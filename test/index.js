@@ -248,6 +248,32 @@ describe('Error Handling', () => {
   })
 })
 
+describe('Timeout', () => {
+  it('should run the function again when the timeout passes', () => {
+    let resolve
+    let counter = 0
+
+    const promise = new Promise(_resolve => {
+      resolve = _resolve
+    })
+
+    const fn = Cache.extend({
+      namespace: createNamespace(),
+      timeout: 1,
+      pollInterval: 10
+    }).wrap(val => {
+      return wait(100).then(() => {
+        if (++counter === 2) resolve()
+        return counter
+      })
+    })
+
+    fn()
+
+    return promise
+  })
+})
+
 function wait (ms) {
   return new Promise(resolve => {
     setTimeout(resolve, ms)
