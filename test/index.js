@@ -126,7 +126,7 @@ describe('Caching', () => {
       const fn = Cache.extend({
         namespace: createNamespace(),
         encoding: 'buffer',
-        fn(val) {
+        fn (val) {
           called++
           return new Buffer(val, 'hex')
         }
@@ -192,65 +192,63 @@ describe('Caching', () => {
 })
 
 describe('Error Handling', () => {
-    it('should return the same error w/ asynchronous functions', () => {
-      let called = 0
+  it('should return the same error w/ asynchronous functions', () => {
+    let called = 0
 
-      const fn = Cache.extend({
-        namespace: createNamespace()
-      }).wrap(val => {
-        return wait(100).then(() => {
-          called++
-          throw new Error('boom')
-        })
-      })
-
-      return Promise.all([
-        fn(1).then(() => {
-          throw new Error('nope')
-        }).catch(err => {
-          assert.equal(err.message, 'boom')
-        }),
-        fn(1).then(() => {
-          throw new Error('nope')
-        }).catch(err => {
-          assert.equal(err.message, 'boom')
-        })
-      ]).then(() => {
-        assert.equal(called, 1)
-      })
-    })
-
-    it('should return the same error w/ synchronous functions', () => {
-      // difference is that we don't care if the function is called multiple times
-      // when the function does not take a lot of time
-      const fn = Cache.extend({
-        namespace: createNamespace()
-      }).wrap(val => {
+    const fn = Cache.extend({
+      namespace: createNamespace()
+    }).wrap(val => {
+      return wait(100).then(() => {
+        called++
         throw new Error('boom')
       })
+    })
 
-      return Promise.all([
-        fn(1).then(() => {
-          throw new Error('nope')
-        }).catch(err => {
-          assert.equal(err.message, 'boom')
-        }),
-        fn(1).then(() => {
-          throw new Error('nope')
-        }).catch(err => {
-          assert.equal(err.message, 'boom')
-        })
-      ])
+    return Promise.all([
+      fn(1).then(() => {
+        throw new Error('nope')
+      }).catch(err => {
+        assert.equal(err.message, 'boom')
+      }),
+      fn(1).then(() => {
+        throw new Error('nope')
+      }).catch(err => {
+        assert.equal(err.message, 'boom')
+      })
+    ]).then(() => {
+      assert.equal(called, 1)
     })
   })
+
+  it('should return the same error w/ synchronous functions', () => {
+      // difference is that we don't care if the function is called multiple times
+      // when the function does not take a lot of time
+    const fn = Cache.extend({
+      namespace: createNamespace()
+    }).wrap(val => {
+      throw new Error('boom')
+    })
+
+    return Promise.all([
+      fn(1).then(() => {
+        throw new Error('nope')
+      }).catch(err => {
+        assert.equal(err.message, 'boom')
+      }),
+      fn(1).then(() => {
+        throw new Error('nope')
+      }).catch(err => {
+        assert.equal(err.message, 'boom')
+      })
+    ])
+  })
+})
 
 function wait (ms) {
   return new Promise(resolve => {
     setTimeout(resolve, ms)
   })
 }
-
-function noop () {}
 
 function createNamespace () {
   return Math.random().toString()
