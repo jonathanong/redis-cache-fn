@@ -2,6 +2,7 @@
 
 /* eslint-env mocha */
 /* eslint max-nested-callbacks: 0 */
+/* eslint promise/param-names: 0 */
 
 const assert = require('assert')
 const Redis = require('ioredis')
@@ -269,6 +270,32 @@ describe('Timeout', () => {
     })
 
     fn()
+
+    return promise
+  })
+})
+
+describe('Pre Cache', () => {
+  it('should precache the values', () => {
+    let resolve
+    let counter = 0
+
+    const promise = new Promise(_resolve => {
+      resolve = _resolve
+    })
+
+    const fn = Cache.extend({
+      namespace: createNamespace(),
+      ttl: 1000,
+      precache: 1 / 100
+    }).wrap(val => {
+      if (++counter === 2) resolve()
+      return counter
+    })
+
+    fn()
+
+    setTimeout(fn, 200)
 
     return promise
   })
