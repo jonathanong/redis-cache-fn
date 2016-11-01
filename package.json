@@ -12,6 +12,7 @@
     "ms": "^0.7.1"
   },
   "devDependencies": {
+    "bluebird": "^3.4.6",
     "ioredis": "^2.4.0",
     "mocha": "^3.1.0",
     "nyc": "^8.3.0",

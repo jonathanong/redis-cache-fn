@@ -6,6 +6,10 @@
 const assert = require('assert')
 const Redis = require('ioredis')
 
+require('bluebird').config({
+  warnings: false
+})
+
 const client = Redis.createClient()
 const subscriber = Redis.createClient()
 
