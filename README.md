@@ -28,6 +28,7 @@ Differences from [redis-cache-decorator](https://github.com/jonathanong/redis-ca
 - Uses a class system so that it's more maintainable
 - A slightly different API
 - Doesn't bother throwing when functions timeout. Use another library instead.
+- Removes stream support
 
 ## API
 
