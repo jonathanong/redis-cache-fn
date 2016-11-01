@@ -1,7 +1,6 @@
 services:
   - redis-server
 node_js:
-  - 4
   - 6
   - 7
 language: node_js
