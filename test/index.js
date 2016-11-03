@@ -301,6 +301,21 @@ describe('Pre Cache', () => {
   })
 })
 
+describe('Wrapped Function', () => {
+  it('should have .Cache', () => {
+    const fn = Cache.extend({
+      namespace: createNamespace(),
+      ttl: 1000,
+      precache: 1 / 100,
+      fn (val) {
+        return true
+      }
+    }).wrap()
+
+    assert(fn.Cache)
+  })
+})
+
 function wait (ms) {
   return new Promise(resolve => {
     setTimeout(resolve, ms)
