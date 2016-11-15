@@ -43,7 +43,7 @@ Differences from [redis-cache-decorator](https://github.com/jonathanong/redis-ca
   - `string`
   - `buffer`
 - `ttl = '30s'` - the TTL expiration in seconds.
-- `timeout = '30s'` - how long to wait for the function to execute before executing the function again.
+- `timeout = 0` - how long to wait for the function to execute before executing the function again. By default, there is no timeout.
   - Ex. if it the current function has waited 30s for the function to complete elsewhere, it will say "F IT" and run the function itself.
 - `pollInterval = '1s'` - how often to poll for new values.
 - `precache = 3/4` - when the age hits this threshold, execute the function again to so that the cache remains fresh.
