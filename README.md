@@ -56,7 +56,7 @@ All options are overwritten except:
 
 - `namespace` - the namespace is simply concatenated with `:`s.
 
-### fn = Cache.extend(function<Function>)
+### fn = Cache.wrap(function<Function>)
 
 Decorates the function so that it hits the cache first.
 
