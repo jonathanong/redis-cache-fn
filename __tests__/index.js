@@ -1,26 +1,27 @@
 'use strict'
 
-/* eslint-env mocha */
+/* eslint-env jest */
 /* eslint max-nested-callbacks: 0 */
 /* eslint promise/param-names: 0 */
 
 const assert = require('assert')
 const Redis = require('ioredis')
 
-require('bluebird').config({
-  warnings: false
-})
-
 const client = Redis.createClient()
 const subscriber = Redis.createClient()
 
-const Cache = require('..')({
+const Cache = require('../lib')({
   client,
   subscriber
 })
 
-before(() => {
+beforeAll(() => {
   return client.flushall()
+})
+
+afterAll(async () => {
+  await client.quit()
+  await subscriber.quit()
 })
 
 describe('Concurrency', () => {
@@ -79,7 +80,7 @@ describe('Concurrency', () => {
       }).wrap(val => {
         called++
         return wait(100).then(() => {
-          return new Buffer(val, 'hex')
+          return Buffer.from(val, 'hex')
         })
       })
 
@@ -133,7 +134,7 @@ describe('Caching', () => {
         encoding: 'buffer',
         fn (val) {
           called++
-          return new Buffer(val, 'hex')
+          return Buffer.from(val, 'hex')
         }
       }).createWrappedFunction()
 
@@ -226,8 +227,8 @@ describe('Error Handling', () => {
   })
 
   it('should return the same error w/ synchronous functions', () => {
-      // difference is that we don't care if the function is called multiple times
-      // when the function does not take a lot of time
+    // difference is that we don't care if the function is called multiple times
+    // when the function does not take a lot of time
     const fn = Cache.extend({
       namespace: createNamespace()
     }).wrap(val => {
